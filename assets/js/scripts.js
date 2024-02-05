@@ -42,6 +42,16 @@ async function getEpisode(id) {
     }
 }
 
+async function getLocation(id) {
+    if (!id) return null;
+    try {
+        const response = await api.locations.get(`/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Erro na requisição: ', error.message);
+    }
+}
+
 // Renderização do Layout
 /**
  * Recebe um array de objetos e retorna os dados formatados no padrão do projeto.
@@ -108,6 +118,11 @@ async function renderCard(character) {
                     <div class="col-12">
                         <h3 class="fs-6 fw-bold mb-1 opacity-75 ">Visto a última vez em:</h3>
                         <p class="fw-bold">${lastEpisode}</p>
+                    </div>
+                    <div class="col-12">
+                        <button class="open-modal text-primary bg-transparent border-0 p-0">
+                            Ver mais
+                        </button>
                     </div>
                 </div>
             </div>
@@ -212,6 +227,9 @@ function changePage(value) {
 }
 
 // Ações
+const infoCharModalRef = document.querySelector('#characterInfo');
+const infoCharModal = new bootstrap.Modal(infoCharModalRef);
+
 /**
  * Atualiza a lista de personagens com base no termo de pesquisa e na página fornecidos.
  * Realiza a atualização da URL e da visualização dos personagens.
@@ -234,6 +252,17 @@ async function updateCharacters(search = null, page = null, searchSubmit=false) 
         charactersDiv.innerHTML = '';
         pagination.length = 0;
     }
+
+    charactersDiv.querySelectorAll('.open-modal').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            if (infoCharModal._isShown) return;
+
+            // Pegar informações do personagem
+            const id = e.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
+            
+            updateModal(id);            
+        })
+    }) 
 
     updatePagination();
 }
@@ -333,6 +362,50 @@ async function updatePage(search=null, resetPage=false, searchSubmit=false) {
     }
 
     await updateCharacters(search, pagination.currentIndex + 1, searchSubmit);
+}
+
+/**
+ * Atualiza as informações do modal com os dados de um personagem.
+ * 
+ * @param {number} id   - O id do personagem.
+ */
+async function updateModal(id) {
+    // Pegar informações do personagem
+    const character = await getCharacter(id);
+
+    // Pegar informações da localização do personagem
+    const location = await getLocation(character.location.url.split('/').slice(-1)[0]);    
+    const episode  = await getEpisode(character.episode.slice(-1)[0].split('/').slice(-1)[0]);
+    
+    // Informações
+    // Adicionar nome do personagem
+    infoCharModalRef.querySelector('.modal-title').innerText = `${character.name}`;
+    
+    // Adicionar status do personagem
+    const status = character.status == 'Dead' ? 'Morto' : character.status == 'Alive' ? 'Vivo' : 'Desconhecido';
+    const statusIndicator = infoCharModalRef.querySelector('.status .indicator');
+    statusIndicator.classList = [];
+    statusIndicator.classList.add('status', 'indicator', character.status.toLowerCase());
+    infoCharModalRef.querySelector('.status small').innerText = `${status} - ${character.species}`;
+    
+    // Adicionar imagem do personagem
+    const characterImage = new Image();
+    characterImage.src = character.image;
+    characterImage.alt = `Imagem do personagem: ${character.name}`;
+    characterImage.classList.add('img-fluid', 'd-block', 'm-auto');
+    infoCharModalRef.querySelector('#character-image').innerHTML = '';
+    infoCharModalRef.querySelector('#character-image').appendChild(characterImage);
+    
+    // Adicionar informações sobre a última localização do personagem
+    infoCharModalRef.querySelector('#modal-last-location p').innerText = `${location.type}: ${location.name}`;
+    infoCharModalRef.querySelector('#modal-last-location small').innerText = `${location.dimension}`;
+    
+    // Adicionar informações sobre o último epísódio que o personagem aparece
+    infoCharModalRef.querySelector('#modal-last-episode p').innerText = `${episode.name}`;
+    infoCharModalRef.querySelector('#modal-last-episode small').innerText = `${episode.episode}`;
+    
+    // Mostrar o modal
+    infoCharModal.show();
 }
 
 /**

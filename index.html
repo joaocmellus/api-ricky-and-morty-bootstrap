@@ -70,6 +70,47 @@
         <div class="row">
             <img class="img-fluid px-0" src="./assets/img/rick-and-morty-background.jpg" alt="Imagem de fundo, decorativa, dos personagens Rick e Morty saindo de um portal.">
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="characterInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="characterName" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fw-semibold fs-3" id="characterName">Nome do personagem</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 col-lg-5">
+                                    <div id="character-image" class="col-12">
+                                        <!-- Imagem do personagem -->
+                                    </div>
+                                    <div class="status mb-3 d-flex justify-content-center">
+                                        <div class="indicator"></div>
+                                        <small class="my-0">Status</small>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row gap-2">
+                                        <div class="col-12" id="modal-last-location">
+                                            <h3 class="fs-6 fw-bold mb-1 opacity-75">Última localização conhecida:</h3>
+                                            <p class="fw-bold m-0"></p>
+                                            <small class="fw-bold opacity-75 position-relative" style="bottom:.7em;"></small>
+                                        </div>
+                                        <div class="col-12" id="modal-last-episode">
+                                            <h3 class="fs-6 fw-bold mb-1 opacity-75 ">Episódios em que o personagem aparece:</h3>
+                                            <p class="fw-bold m-0"></p>
+                                            <small class="fw-bold opacity-75 position-relative" style="bottom:.7em;"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <footer class="container-fluid fw-bold">
         <div class="row">
