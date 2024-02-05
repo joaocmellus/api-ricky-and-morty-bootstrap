@@ -102,7 +102,7 @@ async function renderCard(character) {
     <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
         <div class="card text-light bg-transparent" data-id="${character.id}">
             <img src="${character.image}" class="card-img-top" alt="Imagem do personagem: ${character.name}">
-            <div class="card-body border border-1 border-top-0 rounded-bottom-2">
+            <div class="card-body border border-1 border-top-0 rounded-bottom-2 position-relative overflow-hidden">
                 <div class="row gap-2 ">
                     <div class="col">
                         <h2 class="card-title fw-semibold fs-3">${character.name}</h2>
@@ -125,6 +125,10 @@ async function renderCard(character) {
                         </button>
                     </div>
                 </div>
+                <span class="neon-line"></span>
+                <span class="neon-line"></span>
+                <span class="neon-line"></span>
+                <span class="neon-line"></span>
             </div>
         </div>
     </div>`
@@ -489,7 +493,7 @@ async function setupPage() {
     const URLInfo = await getURLInfo();
 
     searchInput.value = URLInfo.search;
-    setupPagination(URLInfo.page, 10);
+    setupPagination(URLInfo.page, 5);
     updateCharacters(URLInfo.search, URLInfo.page);    
 }
 
